@@ -8,7 +8,7 @@ public class DrawingPanel extends JPanel {
     private final Graphics2D g2;
     private Point lastPoint;
     private int drawSize = 13;
-    private static final int GRID = 14;
+    private static final int GRID = 24;
 
     public DrawingPanel(BufferedImage canvas) {
         this.canvas = canvas;

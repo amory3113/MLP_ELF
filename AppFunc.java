@@ -18,7 +18,7 @@ public class AppFunc {
     private final AppFrame ui;
     private final DrawingPanel panel;
     private Siec net;
-    private static final int GRID = 14;
+    private static final int GRID = 24;
 
     public AppFunc(AppFrame ui, DrawingPanel panel) {
         this.ui = ui;

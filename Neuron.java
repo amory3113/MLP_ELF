@@ -19,7 +19,7 @@ public class Neuron implements Serializable {
 	private void generuj() {
 		Random r=new Random();
 		for(int i=0;i<=liczba_wejsc;i++)
-			wagi[i]=(r.nextDouble()-0.5)*2.0*10;
+			wagi[i]=(r.nextDouble()-0.5)*2.0*0.01;
 			//wagi[i]=(r.nextDouble()-0.5)*2.0*0.01;//do projektu
 	}
 	public double oblicz_wyjscie(double [] wejscia){
