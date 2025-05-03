@@ -5,10 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class AppFrame extends JFrame {
     private static final int WIDTH = 1200, HEIGHT = 750, DRAW_PANEL_SIZE = 500;
-    private final int GRID = 28;
     private BufferedImage canvas;
-    private Graphics2D g2;
-    private float[][] pixels = new float[GRID][GRID];
     private JRadioButton eRadio, lRadio, fRadio;
     private DrawingPanel drawingPanel;
     private AppFunc appFunc;
@@ -22,11 +19,6 @@ public class AppFrame extends JFrame {
         getContentPane().setBackground(new Color(240, 240, 245));
 
         canvas = new BufferedImage(DRAW_PANEL_SIZE, DRAW_PANEL_SIZE, BufferedImage.TYPE_BYTE_GRAY);
-        g2 = canvas.createGraphics();
-        g2.setColor(Color.WHITE);
-        g2.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        g2.setColor(Color.BLACK);
-
         drawingPanel = new DrawingPanel(canvas);
         drawingPanel.setPreferredSize(new Dimension(DRAW_PANEL_SIZE, DRAW_PANEL_SIZE));
         JPanel leftPanel = new JPanel(new GridBagLayout());
@@ -37,7 +29,7 @@ public class AppFrame extends JFrame {
         JPanel rightPanel = createControlPanel();
         add(rightPanel, BorderLayout.CENTER);
 
-        appFunc = new AppFunc(this, drawingPanel, canvas, g2, pixels, eRadio, lRadio, fRadio, GRID);
+        appFunc = new AppFunc(this, drawingPanel);
         setVisible(true);
     }
 
@@ -69,7 +61,10 @@ public class AppFrame extends JFrame {
         JButton saveBtn = createStyledButton("Zapisz dane", btnFont);
         saveBtn.setPreferredSize(btnSize);
         saveBtn.setForeground(Color.WHITE);
-        saveBtn.addActionListener(e -> { appFunc.saveToCSV("dataset.csv"); appFunc.clearCanvas(); });
+        saveBtn.addActionListener(e -> {
+            appFunc.saveTrainSample();
+            appFunc.clearCanvas();
+        });
         actions.add(saveBtn);
 
         JButton trainBtn = createStyledButton("Ucz MLP", btnFont);
@@ -81,7 +76,10 @@ public class AppFrame extends JFrame {
         JButton saveTestBtn = createStyledButton("Zapisz do testu", btnFont);
         saveTestBtn.setPreferredSize(btnSize);
         saveTestBtn.setForeground(Color.WHITE);
-        saveTestBtn.addActionListener(e -> { appFunc.saveToCSV("dataset_test.csv"); appFunc.clearCanvas(); });
+        saveTestBtn.addActionListener(e -> {
+            appFunc.saveTestSample();
+            appFunc.clearCanvas();
+        });
         actions.add(saveTestBtn);
 
         JButton testBtn = createStyledButton("Test Model", btnFont);
@@ -131,5 +129,20 @@ public class AppFrame extends JFrame {
         btn.setFocusPainted(false);
         return btn;
     }
-}
 
+    public JRadioButton getERadio() {
+        return eRadio;
+    }
+    
+    public JRadioButton getLRadio() {
+        return lRadio;
+    }
+
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            AppFrame frame = new AppFrame();
+            frame.setVisible(true);
+        });
+    }
+
+}
