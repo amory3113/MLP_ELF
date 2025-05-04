@@ -42,10 +42,12 @@ public class AppFunc {
         loadIfNeeded();
         if (net == null) return;
         double[] out = net.oblicz_wyjscie(panel.capture14());
-        int idx = IntStream.range(0, 3)
-                .boxed()
-                .max(Comparator.comparingDouble(i -> out[i]))
-                .orElse(0);
+        double niepewnosc = Math.max(out[0], Math.max(out[1], out[2]));
+        if(niepewnosc < 0.70){
+            JOptionPane.showMessageDialog(ui, String.format("Nie mogę rozpoznać symbolu"));
+            return;
+        }
+        int idx = IntStream.range(0, 3).boxed().max(Comparator.comparingDouble(i -> out[i])).orElse(0);
         char c = "ELF".charAt(idx);
         JOptionPane.showMessageDialog(ui,
             String.format("Sieć myśli: %c (%.2f  %.2f  %.2f)", c, out[0], out[1], out[2]));
