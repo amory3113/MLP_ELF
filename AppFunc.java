@@ -127,35 +127,47 @@ public class AppFunc {
     public void testAction() {
         loadIfNeeded();
         if (net == null) return;
+
         Path p = Paths.get("test_dataset.csv");
         if (!Files.exists(p)) {
-            JOptionPane.showMessageDialog(ui, "Brak test_dataset.csv");
+            JOptionPane.showMessageDialog(ui, "Plik test_dataset.csv nie istnieje");
             return;
         }
+
         int ok = 0, total = 0;
+
         try {
-            for (String line : Files.readAllLines(p)) {
-                String[] s = line.trim().split("\\s+");
+            for (String rawLine : Files.readAllLines(p)) {
+                // убираем скобки и лишние пробелы
+                String line = rawLine.replace("[", "").replace("]", "").trim();
+                String[] s  = line.split("\\s+");
                 if (s.length != GRID * GRID + 3) continue;
+
                 double[] in = new double[GRID * GRID];
-                double[] tg = new double[3];
                 for (int i = 0; i < in.length; i++) in[i] = Double.parseDouble(s[i]);
+
+                double[] tg = new double[3];
                 for (int j = 0; j < 3; j++) tg[j] = Double.parseDouble(s[GRID * GRID + j]);
+
                 double[] out = net.oblicz_wyjscie(in);
+
                 int pred = IntStream.range(0, 3)
-                             .reduce((a, b) -> out[a] > out[b] ? a : b).orElse(0);
+                        .reduce((a, b) -> out[a] > out[b] ? a : b).orElse(0);
                 int real = IntStream.range(0, 3)
-                             .reduce((a, b) -> tg[a] > tg[b] ? a : b).orElse(0);
+                        .reduce((a, b) -> tg[a] > tg[b] ? a : b).orElse(0);
+
                 if (pred == real) ok++;
                 total++;
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        double acc = total == 0 ? 0 : (ok * 100.0 / total);
+
+        double acc = total == 0 ? 0 : ok * 100.0 / total;
         JOptionPane.showMessageDialog(ui,
-            String.format("Accuracy: %.2f%% (%d/%d)", acc, ok, total));
+                String.format("Skuteczność: %.2f%%  (%d z %d)", acc, ok, total));
     }
+
 
     private char selected() {
         if (ui.getERadio().isSelected()) return 'E';
