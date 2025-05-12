@@ -17,32 +17,22 @@ public class Siec implements Serializable {
 	}
 
 	public void uczBatch(List<double[]> X, List<double[]> T, int epochs, double lr) {
-		// 1) Устанавливаем lr во всех нейронах
 		for (Warstwa w : warstwy) {
 			for (Neuron n : w.neurony) {
 				n.lr = lr;
 			}
 		}
-
-		// 2) Создаем список индексов [0..N-1]
 		int N = X.size();
 		List<Integer> idx = new ArrayList<>(N);
 		for (int i = 0; i < N; i++) idx.add(i);
 
 		Random rnd = new Random();
-
-		// 3) Основной цикл обучения
 		for (int e = 0; e < epochs; e++) {
-			// 3a) Перемешиваем порядок примеров
 			Collections.shuffle(idx, rnd);
-
-			// 3b) Проходим по каждому примеру в новом порядке
 			for (int k : idx) {
 				double[] in  = X.get(k);
-				// прямой проход
 				oblicz_wyjscie(in);
 
-				// δ для выходного слоя
 				Warstwa outL = warstwy[liczba_warstw - 1];
 				double[] target = T.get(k);
 				for (int j = 0; j < outL.neurony.length; j++) {
@@ -50,12 +40,9 @@ public class Siec implements Serializable {
 					outL.neurony[j].delta = (yj - target[j]) * yj * (1 - yj);
 				}
 
-				// δ скрытых слоёв
 				for (int l = liczba_warstw - 2; l >= 0; l--) {
 					warstwy[l].backHidden(warstwy[l + 1]);
 				}
-
-				// аккумулируем градиенты
 				double[] wej = in;
 				for (Warstwa w : warstwy) {
 					for (Neuron n : w.neurony) {

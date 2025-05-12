@@ -34,7 +34,7 @@ public class AppFunc {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("weights.bin"))) {
             net = (Siec) in.readObject();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(ui, "Нет выученной модели! Сначала нажмите «Ucz MLP»");
+            JOptionPane.showMessageDialog(ui, "Nie ma wyuczonego modelu! Najpierw kliknij na „Ucz MLP”");
         }
     }
 
@@ -50,7 +50,8 @@ public class AppFunc {
         int idx = IntStream.range(0, 3).boxed().max(Comparator.comparingDouble(i -> out[i])).orElse(0);
         char c = "ELF".charAt(idx);
         JOptionPane.showMessageDialog(ui,
-            String.format("Sieć myśli: %c (%.2f  %.2f  %.2f)", c, out[0], out[1], out[2]));
+//            String.format("Sieć myśli: %c (%.2f  %.2f  %.2f)", c, out[0], out[1], out[2]));
+                String.format("Sieć myśli: %c", c));
     }
 
     public void saveTrainSample() {
@@ -69,7 +70,6 @@ public class AppFunc {
             for (double d : panel.capture14()) {
                 sb.append(d).append(' ');
             }
-            char c = selected();
             double[] t = oneHot(selected());
             sb.append('[');
             for(int i = 0; i < t.length; i++) {
@@ -78,10 +78,7 @@ public class AppFunc {
             }
             sb.append("] ");
             sb.append('\n');
-            Files.writeString(path,
-                              sb.toString(),
-                              StandardOpenOption.CREATE,
-                              StandardOpenOption.APPEND);
+            Files.writeString(path, sb.toString(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -129,16 +126,11 @@ public class AppFunc {
         if (net == null) return;
 
         Path p = Paths.get("test_dataset.csv");
-        if (!Files.exists(p)) {
-            JOptionPane.showMessageDialog(ui, "Plik test_dataset.csv nie istnieje");
-            return;
-        }
 
         int ok = 0, total = 0;
 
         try {
             for (String rawLine : Files.readAllLines(p)) {
-                // убираем скобки и лишние пробелы
                 String line = rawLine.replace("[", "").replace("]", "").trim();
                 String[] s  = line.split("\\s+");
                 if (s.length != GRID * GRID + 3) continue;

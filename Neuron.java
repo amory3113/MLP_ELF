@@ -24,12 +24,9 @@ public class Neuron implements Serializable {
 	}
 	public double oblicz_wyjscie(double [] wejscia){
 		double fi=wagi[0];
-		//double fi=0.0;
 		for(int i=1;i<=liczba_wejsc;i++)
 			fi+=wagi[i]*wejscia[i-1];
-		double wynik=1.0/(1.0+Math.exp(-fi));// funkcja aktywacji sigma -unip
-		//double wynik=(fi>0.0)?1.0:0.0;//skok jednostkowy
-		//double wynik=fi; //f.a. liniowa 
+		double wynik=1.0/(1.0+Math.exp(-fi));
 		return wynik;
 	}
 

@@ -36,10 +36,6 @@ public class DrawingPanel extends JPanel {
         addMouseMotionListener(mouseAdapter);
     }
 
-    public BufferedImage getCanvas() {
-        return canvas;
-    }
-
     public double[] capture14() {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
